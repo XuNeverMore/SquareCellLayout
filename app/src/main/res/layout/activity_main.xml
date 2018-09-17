@@ -8,9 +8,9 @@
     tools:context="com.nevermore.squarecelllayout.MainActivity">
 
 
-    <com.nevermore.squarecelllayout.CellLayout
+    <com.nevermore.celllayout.CellLayout
         android:paddingTop="5dp"
-        app:cellSpcing="5dp"
+        app:cellSpace="5dp"
         app:columCount="3"
         app:isSquareCell="true"
         android:paddingBottom="5dp"
@@ -166,7 +166,7 @@
 
 
 
-    </com.nevermore.squarecelllayout.CellLayout>
+    </com.nevermore.celllayout.CellLayout>
 
 
 </ScrollView>

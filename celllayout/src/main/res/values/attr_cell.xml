@@ -4,7 +4,7 @@
         <!--是否是正方形模式-->
         <attr name="isSquareCell" format="boolean"/>
         <!--各自之间的间隙-->
-        <attr name="cellSpcing" format="dimension"/>
+        <attr name="cellSpace" format="dimension"/>
         <!--列数-->
         <attr name="columCount" format="integer"/>
     </declare-styleable>

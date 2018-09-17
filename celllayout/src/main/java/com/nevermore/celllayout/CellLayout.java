@@ -3,7 +3,6 @@ package com.nevermore.celllayout;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +10,10 @@ import android.widget.BaseAdapter;
 
 
 /**
- *
  * @ClassName:CellLayout
-
  * @PackageName:com.nevermore.squarecelllayout
-
  * @Create On 2017/6/25   11:36
-
  * @author:xuchuanting
-
  * @Copyrights 2017/6/25 nevermore All rights reserved.
  */
 
@@ -43,9 +37,9 @@ public class CellLayout extends ViewGroup {
     public CellLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.CellLayout);
-        space = typedArray.getDimensionPixelSize(R.styleable.CellLayout_cellSpcing, 0);
+        space = typedArray.getDimensionPixelSize(R.styleable.CellLayout_cellSpace, 0);
         isSquareMode = typedArray.getBoolean(R.styleable.CellLayout_isSquareCell, true);
-        columCount = typedArray.getInteger(R.styleable.CellLayout_columCount,3);
+        columCount = typedArray.getInteger(R.styleable.CellLayout_columCount, 3);
         typedArray.recycle();
     }
 
@@ -54,12 +48,8 @@ public class CellLayout extends ViewGroup {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         //总宽度
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        Log.i(TAG, "widthSize: "+widthSize);
         //根据列数columCount和间隙space求出每个格子宽度
-        int hs = space * (columCount - 1);
-        Log.i(TAG, "hs: "+hs);
         int cellWidth = getCellWidth();
-        Log.i(TAG, "cellWidth: "+cellWidth);
         int childCount = getChildCount();
 
         rowMaxHeights.clear();
@@ -67,19 +57,15 @@ public class CellLayout extends ViewGroup {
         int rowMaxHeight = 0;
         for (int i = 0; i < childCount; i++) {
             View child = getChildAt(i);
-            LayoutParams layoutParams = child.getLayoutParams();
-            layoutParams.width = cellWidth;
-            if(isSquareMode){
-                layoutParams.height = cellWidth;
-            }
             //测量子view
-            measureChild(child, widthMeasureSpec, heightMeasureSpec);
-
+            if (isSquareMode) {
+                int childMeasureSpec = getChildMeasureSpec(widthMeasureSpec, 0, cellWidth);
+                child.measure(childMeasureSpec, childMeasureSpec);
+            } else {
+                measureChild(child, widthMeasureSpec, heightMeasureSpec);
+            }
 
             int childMeasuredHeight = child.getMeasuredHeight();
-            //保存子view宽高
-            child.measure(getChildMeasureSpec(widthMeasureSpec, getPaddingLeft()+getPaddingRight(), cellWidth),
-                    getChildMeasureSpec(heightMeasureSpec, 0, isSquareMode ? cellWidth : childMeasuredHeight));
 
             //记录每一行的最大高度
             if (!isSquareMode) {
@@ -106,7 +92,7 @@ public class CellLayout extends ViewGroup {
                 totalRowHeight += rowMaxHeights.get(i);
             }
         }
-        int heightSize = space * (rowCount - 1) + totalRowHeight+getPaddingTop()+getPaddingBottom();
+        int heightSize = space * (rowCount - 1) + totalRowHeight + getPaddingTop() + getPaddingBottom();
         setMeasuredDimension(widthSize, heightSize);
 
     }
@@ -134,7 +120,7 @@ public class CellLayout extends ViewGroup {
      *
      * @return
      */
-    public int getColumCount() {
+    public int getColumnCount() {
         return columCount;
     }
 
@@ -144,7 +130,7 @@ public class CellLayout extends ViewGroup {
      * @return
      */
     public int getCellWidth() {
-        return (getMeasuredWidth() - space * (columCount - 1)-getPaddingRight()-getPaddingRight()) / columCount;
+        return (getMeasuredWidth() - space * (columCount - 1) - getPaddingRight() - getPaddingRight()) / columCount;
     }
 
     @Override
@@ -156,11 +142,9 @@ public class CellLayout extends ViewGroup {
         int top = paddingTop;
         int cellWidth = getCellWidth();
         for (int i = 0; i < getChildCount(); i++) {
-
             View child = getChildAt(i);
 
-
-            int height = isSquareMode?cellWidth:rowMaxHeights.get(getRowIndex(i));
+            int height = isSquareMode ? cellWidth : rowMaxHeights.get(getRowIndex(i));
             child.layout(left, top, left + cellWidth, top + (isSquareMode ? cellWidth : child.getMeasuredHeight()));
             if ((i + 1) % columCount == 0) {//换行了
                 left = paddingLeft;
@@ -190,15 +174,16 @@ public class CellLayout extends ViewGroup {
     /**
      * 写个适配器简化一下添加view
      * 暂不支持回收
+     *
      * @param adapter
      */
-    public void setAdapter(BaseAdapter adapter){
-        if(adapter==null){
+    public void setAdapter(BaseAdapter adapter) {
+        if (adapter == null) {
             return;
         }
         removeAllViews();
         for (int i = 0; i < adapter.getCount(); i++) {
-            addView(adapter.getView(i,null,null));
+            addView(adapter.getView(i, null, null));
         }
 
     }
