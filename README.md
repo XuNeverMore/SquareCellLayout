@@ -4,7 +4,7 @@
 
 看下效果吧：</br>
 
-<img src="https://github.com/XuNeverMore/SquareCellLayout/blob/master/image/device-2018-09-17-111359.png" width="50%" height="50%">
+<img src="https://github.com/XuNeverMore/SquareCellLayout/blob/master/image/device-2018-09-17-111359.png" width="25%" height="25%">
 
 ## How to use?
 ```
